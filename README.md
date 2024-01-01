@@ -33,22 +33,22 @@ S3 -> Create Bucket -> General configuration ( Unique bucket name and select pro
   > Bucket policy JSON code:
 
 
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "PublicReadGetObject",
-            "Effect": "Allow",
-            "Principal": "*",
-            "Action": [
-                "s3:GetObject"
-            ],
-            "Resource": [
-                "arn:aws:s3:::Bucket-Name/*"
-            ]
-        }
-    ]
-}
+- {
+-    "Version": "2012-10-17",
+-    "Statement": [
+-        {
+-            "Sid": "PublicReadGetObject",
+-            "Effect": "Allow",
+-            "Principal": "*",
+-            "Action": [
+-                "s3:GetObject"
+-            ],
+-            "Resource": [
+-                "arn:aws:s3:::Bucket-Name/*"
+-            ]
+-        }
+-    ]
+- }
 
 
 >> This policy says to "Allow" everyone (the Principal of "*") to take the action of "GetObject" (basically "read") on all files in your bucket ("Bucket-Name/*").
