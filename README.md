@@ -3,10 +3,10 @@ Host a resume as a static website on AWS S3 integrate with Route53, Certificate 
 =============================================================================================================================================================================================================================
 
 Steps involved:
-=> Create a dedicated "S3 Bucket" and upload application files (Check the repo for resume template files- index.html, styles.css & script.js)
-=> Register a new Domain with "Route53".
-=> Create a Public TLS/SSL Certificate using AWS Certificate Manager
-=> Create a CloudFront Distribution
+- Create a dedicated "S3 Bucket" and upload application files (Check the repo for resume template files- index.html, styles.css & script.js)
+- Register a new Domain with "Route53".
+- Create a Public TLS/SSL Certificate using AWS Certificate Manager.
+- Create a CloudFront Distribution
 =============================================================================================================================================================================================================================
 
 Let's deep dive into step by step
