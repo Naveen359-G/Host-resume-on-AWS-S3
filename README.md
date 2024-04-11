@@ -2,14 +2,14 @@
 Host a resume as a static website on AWS S3 integrate with Route53, Certificate Manager and CloudFront
 =============================================================================================================================================================================================================================
 
-Steps involved:
+# Steps involved:
 - Create a dedicated "S3 Bucket" and upload application files (Check the repo for resume template files- index.html, styles.css & script.js)
 - Register a new Domain with "Route53".
 - Create a Public TLS/SSL Certificate using AWS Certificate Manager.
 - Create a CloudFront Distribution
 =============================================================================================================================================================================================================================
 
-Let's deep dive into step by step
+# Let's deep dive into step by step
 => Create a dedicated S3 bucket:
 Navigate to AWS Management Console and search for S3.
 S3 -> Create Bucket -> General configuration ( Unique bucket name and select proper region)
@@ -32,26 +32,26 @@ S3 -> Create Bucket -> General configuration ( Unique bucket name and select pro
   > Add a bucket policy to allow the contents of the bucket to be publicly accessible.
   > Bucket policy JSON code:
 
+```JSON
+ {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": [
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::Bucket-Name/*"
+            ]
+        }
+    ]
+ }
+```
 
-- {
--    "Version": "2012-10-17",
--    "Statement": [
--        {
--            "Sid": "PublicReadGetObject",
--            "Effect": "Allow",
--            "Principal": "*",
--            "Action": [
--                "s3:GetObject"
--            ],
--            "Resource": [
--                "arn:aws:s3:::Bucket-Name/*"
--            ]
--        }
--    ]
-- }
-
-
->> This policy says to "Allow" everyone (the Principal of "*") to take the action of "GetObject" (basically "read") on all files in your bucket ("Bucket-Name/*").
+# >> This policy says to "Allow" everyone (the Principal of "*") to take the action of "GetObject" (basically "read") on all files in your bucket ("Bucket-Name/*").
 ** IMPORTANT: Update "Bucket-Name" with the name of your bucket. Then click Save changes.
 
 Now, you've got a bucket that's configured for static website hosting, and you've applied a policy that will let people access the site. 
@@ -63,12 +63,13 @@ Now it's time to add your code files (Provided in repo- modify your details acco
 >> Now it's time to test that your resume loads. To do this, you'll need to get the S3 bucket website endpoint.
 >>>> Navigate to  the |Properties | tab of the bucket. -> Scroll all the way down to the bottom of the page, to the Static website hosting section. 
      Click on the Bucket website endpoint link (it will open in a new tab).
->> If everything worked, you should see your resume as a website displayed in the browser.
+
+# >> If everything worked, you should see your resume as a website displayed in the browser.
 
 =============================================================================================================================================================================================================================
 
-=> Let's work on the domain name next, using Route 53, which is Amazon's domain name and DNS service.
->>If you don't already have a domain name, then you can register one with AWS, using Route 53. 
+# => Let's work on the domain name next, using Route 53, which is Amazon's domain name and DNS service.
+ >>If you don't already have a domain name, then you can register one with AWS, using Route 53. 
  (If you already have a domain name with another provider, I'll give you some general guidance on using that further.)
 >> Navigate to Route53, on the Route 53 Dashboard, simply enter the domain name you're interested in, then click Check.
 
@@ -89,12 +90,12 @@ Now it's time to add your code files (Provided in repo- modify your details acco
 >> Click into your hosted zone, and then click Create record.
 NOTE: If you get the "wizard" view (Check top right corner of the page) click Switch to quick create.  (If you don't see this "tile" view, then you're already in quick create mode.)
 
->> Fill out the details for the record.
+# >> Fill out the details for the record.
 Record name: Leave the subdomain blank, and just go with the root domain (like "amberaws.com").
 Record type: A
 Alias: Toggle this on. An alias lets you route to AWS resources like S3, CloudFront, Elastic Beanstalk and so on.
 
->> Now fill in the details of where to route traffic. You can type into these dropdowns to filter the values.
+# >> Now fill in the details of where to route traffic. You can type into these dropdowns to filter the values.
 - Alias to S3 website endpoint
 - Your region 
 - The final dropdown should automatically populate with your S3 website.
@@ -107,11 +108,11 @@ Alias: Toggle this on. An alias lets you route to AWS resources like S3, CloudFr
   After the Status changes from PENDING to INSYNC, then you should be good to test out your changes. (Make sure the status says INSYNC before testing things out)
 
   
-  >>>>  type your domain name into a browser (like example.com), Route 53 should direct you to the S3 website, which means you should see your resume.
+  # >>>>  type your domain name into a browser (like example.com), Route 53 should direct you to the S3 website, which means you should see your resume.
 
 =============================================================================================================================================================================================================================
 
-=> The Next step is to get a secure connection (HTTPS, with a TLS/SSL certificate) working so you can get rid of that "Not secure" message from your browser.
+# => The Next step is to get a secure connection (HTTPS, with a TLS/SSL certificate) working so you can get rid of that "Not secure" message from your browser.
 
 - Create a Public TLS/SSL Certificate using AWS Certificate Manager.
   If you need a refresher on certificates, these help ensure a secure connection between users and the server they're making a request to.
@@ -120,7 +121,7 @@ Alias: Toggle this on. An alias lets you route to AWS resources like S3, CloudFr
    (IMPORTANT!  For this section, you need to switch your region to us-east-1 (N. Virginia). If you create a certificate in another region,
     you won't be able to use it with CloudFront (where you'll eventually end up).
 
->> From the Certificate Manager landing page, click Request a certificate. Select Request a public certificate and then click Next.
+# >> From the Certificate Manager landing page, click Request a certificate. Select Request a public certificate and then click Next.
 
 >> Enter your domain name (like "example.com"), leave the rest of the options as defaults, then click Request.
 - The request was successful, but it will have a "pending validation" status until you validate DNS. Click View certificate.
@@ -137,7 +138,7 @@ Alias: Toggle this on. An alias lets you route to AWS resources like S3, CloudFr
 > Your website files are currently hosted in S3, but unfortunately, you can't use a certificate on an S3 bucket.
 =============================================================================================================================================================================================================================
 
-=> A CloudFront distribution that points to the S3 bucket. And then the certificate is applied to the CloudFront distribution.
+# => A CloudFront distribution that points to the S3 bucket. And then the certificate is applied to the CloudFront distribution.
 
 => Create a CloudFront Distribution:
    Amazon's content delivery network, or CDN. It's used to get content to users faster by caching it at "edge locations" around the world. 
@@ -152,7 +153,7 @@ Alias: Toggle this on. An alias lets you route to AWS resources like S3, CloudFr
 >> Scroll down to the Default cache behavior section, then under Viewer, select Redirect HTTP to HTTPS.
 >> Scroll down to Web Application Firewall (WAF) and select Do not enable security protections.
 
->> In the next section, Settings:
+# >> In the next section, Settings:
    For Alternate domain name (CNAME), enter your domain name (like "example.com"). 
    For Custom SSL certificate, select the certificate you set up earlier. 
    NOTE: if you set it up in a region other than us-east-1 (N. Virginia), it won't show up here. You'll need to recreate it in us-east-1.
@@ -166,7 +167,7 @@ Alias: Toggle this on. An alias lets you route to AWS resources like S3, CloudFr
 => To test that everything is working with CloudFront and the TLS/SSL certificate, copy the Distribution domain name. Open a new tab in the browser and navigate to that address.
 =============================================================================================================================================================================================================================
 
-==> You should now see the all-important padlock icon in your browser, indicating that you're on a secure connection using the certificate set up through Certificate Manager.
+# > You should now see the all-important padlock icon in your browser, indicating that you're on a secure connection using the certificate set up through Certificate Manager.
 
 >>>> Update Route 53 to Point to the CloudFront Distribution, at the moment, the A Record in Route 53 is pointing to the S3 bucket. 
      Instead, we want Route 53 to point to the CloudFront distribution, which then points to S3.
@@ -180,11 +181,11 @@ Alias: Toggle this on. An alias lets you route to AWS resources like S3, CloudFr
 ===>> Now you should be able to navigate to your custom domain name and have it load your resume on a secure connection.
 =============================================================================================================================================================================================================================
 
--------------------------------  IMPORTANT! Delete Your Resources  -------------------------------------
+ #  IMPORTANT! Delete Your Resources  
 ** Make syre to set up an AWS Budget to be notified when charges reach a certain threshold.
 =============================================================================================================================================================================================================================
 
-Delete the following:
+# Delete the following:
 - Disable and delete the CloudFront distribution
 - Delete records from the Route 53 hosted zone
 - Delete the hosted zone (optional)- You can also choose to delete your hosted zone in Route 53, but if you do, your domain might become unavailable on the internet.  
@@ -192,7 +193,7 @@ Delete the following:
   But if you'd like to go ahead with deletion, just select the hosted zone and click Delete.
 - Confirm that you've completed the actions in this warning message, type "delete," and then click Delete.
   
-
+# 
 > Delete the certificate from Certificate Manager
 > Empty the S3 bucket and then delete it. Before you can delete a bucket, you must first delete the files in it. AWS provides a handy link to do that. Click the link to empty bucket configuration.
 > Click delete bucket configuration.
